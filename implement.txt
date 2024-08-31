@@ -1,0 +1,12 @@
+
+Things to implement:
+
+1. increase Spawn interval rate
+2. Missles enemies
+    - https://www.youtube.com/watch?v=PvqeCPxAUsw&t=2s
+3. two shooting style boss aqua
+    - stop at the middle and do the 360 shooting
+4. item drop
+5. control menu
+6. deploy ec2
+7. database mysql + php
