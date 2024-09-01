@@ -635,7 +635,7 @@ function resetVariables() {
     player = {
         x: 0,
         y: 0,
-        health: 9999999999,
+        health: 5,
         speed: 5,
         height: 50,
         width: 50,
@@ -679,6 +679,7 @@ function startGame() {
 
 // Function to display game over
 function displayGameOver() {
+    postPlayerScore();
     displayCanvas();
     ctx.font = "70px sans-serif";
     ctx.fillStyle = "white";
@@ -707,6 +708,24 @@ function gameLoop() {
         adjustSpawnRate();
         requestID = requestAnimationFrame(gameLoop); // Call the game loop again
     }
+}
+
+function postPlayerScore() {
+    const data = { score: player.score };
+    fetch('postScore.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log('Response from PHP:', data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 // Display welcome screen
