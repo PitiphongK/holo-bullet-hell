@@ -28,6 +28,7 @@ let enemies;
 let enemyBullets;
 let spawnEnemyInterval;
 let spawnRate = 1000; // Initial spawn rate in milliseconds
+let = spawnRateCtrl = [0, 0, 0, 0]; // Control the spawn mechanism
 
 // Boss
 let bosses;
@@ -361,19 +362,32 @@ function spawnEnemy() {
 
 // Function to increase spawn rate according to score
 function adjustSpawnRate() {
-    if (player.score >= 10000) {
-        spawnRate = 500; // Faster spawn rate as score increases
-    } else if (player.score >= 5000) {
+    let spawnRateChanged = false;
+
+    if (player.score >= 10000 && !spawnRateCtrl[3]) {
+        spawnRate = 300; // Faster spawn rate as score increases
+        spawnRateCtrl[3] = 1
+        spawnRateChanged = true;
+    } else if (player.score >= 5000 && !spawnRateCtrl[2]) {
         spawnRate = 750;
-    } else if (player.score >= 1000) {
+        spawnRateCtrl[2] = 1
+        spawnRateChanged = true;
+    } else if (player.score >= 1000 && !spawnRateCtrl[1]) {
         spawnRate = 900;
-    } else {
+        spawnRateCtrl[1] = 1
+        spawnRateChanged = true;
+    } else if (!spawnRateCtrl[0]){
         spawnRate = 1000; // Default spawn rate
+        spawnRateCtrl[0] = 1
+        spawnRateChanged = true;
+        console.log("set")
     }
 
     // Clear the existing interval and set a new one with the updated spawn rate
-    clearInterval(spawnYagooInterval);
-    spawnYagooInterval = setInterval(() => spawnEnemy, spawnRate);
+    if (spawnRateChanged) {
+        clearInterval(spawnEnemyInterval);
+        spawnEnemyInterval = setInterval(spawnEnemy, spawnRate);
+    }
 }
 
 
@@ -388,20 +402,20 @@ function adjustSpawnRate() {
 
 
 function createBoss() {
-    bossCount++
     if (bosses.length == 0) {
         const boss = {
             name: "Aqua",
             x: Math.floor(Math.random() * (canvas.width - 50)),
             y: 50,
-            health: 100 * bossCount, // increase boss health based on number of bosses spawned
-            maxHealth: 100 * bossCount,
+            health: 100 + (1000 * bossCount), // increase boss health based on number of bosses spawned
+            maxHealth: 100 + (1000 * bossCount),
             speed: 3,
             height: 100, 
             width: 50,
             score: 10000,
             shootInterval: 2000,
         }
+        bossCount++
         bosses.push(boss);
         clearInterval(spawnBossInterval); // stop spawning bass
         bossShootInterval = setInterval(bossShoot, boss.shootInterval);
@@ -551,7 +565,7 @@ function collisionDetection() {
             boss.speed = -boss.speed 
         }
         if (isColliding(boss, player)) {
-            player.health -= enemyBullet.damage;
+            player.health =- 5;
         }
         playerBullets.forEach((bullet, bIndex) => {
             if (isColliding(bullet, boss)) {
@@ -621,7 +635,7 @@ function resetVariables() {
     player = {
         x: 0,
         y: 0,
-        health: 5,
+        health: 9999999999,
         speed: 5,
         height: 50,
         width: 50,
@@ -646,6 +660,7 @@ function resetVariables() {
     // Enemies
     enemies = [];
     enemyBullets = [];
+    spawnRateCtrl = [0, 0, 0, 0];
     // Boss
     bosses = []
     bossCount = 0;
@@ -689,6 +704,7 @@ function gameLoop() {
         updateBossBullet();
         drawBossHealth();
         collisionDetection();
+        adjustSpawnRate();
         requestID = requestAnimationFrame(gameLoop); // Call the game loop again
     }
 }
