@@ -1,25 +1,30 @@
 <?php
-include 'db.php';
+// Create database connection
+include 'connection.php'; 
 
+// Start session
 session_start();
-$session_identifier = session_id();
 
-$checkSessionQuery = "SELECT session_id FROM game_sessions WHERE session_identifier = '$session_identifier'";
-$result = $conn->query($checkSessionQuery);
+// Create a new session for first-time users
+if (!isset($_SESSION["session_id"])) {
 
-if ($result->num_rows === 0) {
-    $sql = "INSERT INTO game_sessions (session_identifier)
-            VALUES ('$session_identifier')";
-    if ($conn->query($sql) === TRUE) {
-        // New record created successfully
-    } else {
-        // Handle error
+    // Prepare query, bind parameter, and execute
+    $stmt = $conn->prepare("INSERT INTO game_sessions (session_identifier)
+                            VALUES (?)"); // Prepare query
+    $stmt->bind_param("s", $session_identifier); // bind parameter
+    $session_identifier = session_id(); // Get session id
+    $res = $stmt->execute(); // Execute query
+    if ($res === false) {
+        echo "Could not execute query";
     }
-} else {
-    // Session already exists
+
+    // Set to the last auto-increment id
+    $_SESSION["session_id"] = $conn->insert_id; 
+    $stmt->close(); // Close statment
 }
 
-$conn->close();
+// Close database connection
+$conn->close(); 
 ?>
 
 <!DOCTYPE html>

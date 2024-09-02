@@ -44,20 +44,22 @@ let healthX = (canvas.width / 2) - (healthWidth / 2);
 let heakthY = 10;
 
 // Create entities images
+const path = "images/"
+
 let suisei = new Image();
-suisei.src = "suisei.png";
+suisei.src = path + "suisei.png";
 
 let yagoo = new Image();
-yagoo.src = "yagoo.png";
+yagoo.src = path + "yagoo.png";
 
 let yagooPlus = new Image();
-yagooPlus.src = "yagooPlus.png";
+yagooPlus.src = path + "yagooPlus.png";
 
 let ame = new Image();
-ame.src = "ame.jpg";
+ame.src = path + "ame.jpg";
 
 let aqua = new Image();
-aqua.src = "aqua.png";
+aqua.src = path + "aqua.png";
 
 // Function to resize page
 function resizeCanvas() {
@@ -120,13 +122,6 @@ window.addEventListener("keyup", (event) => {
         clearInterval(playerBulletInterval);
     }
 });
-
-// Function to paint screen
-function displayCanvas() {
-    ctx.fillStyle = "black";
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillRect(0, 0, canvas.width, canvas.height);//fillRect(x, y, width, height)
-}
 
 
 
@@ -380,7 +375,6 @@ function adjustSpawnRate() {
         spawnRate = 1000; // Default spawn rate
         spawnRateCtrl[0] = 1
         spawnRateChanged = true;
-        console.log("set")
     }
 
     // Clear the existing interval and set a new one with the updated spawn rate
@@ -601,6 +595,13 @@ function collisionDetection() {
     }
 }
 
+// Function to paint screen
+function displayCanvas() {
+    ctx.fillStyle = "black";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);//fillRect(x, y, width, height)
+}
+
 // Function to display welcome screen
 function welcomeScreen() {
     displayCanvas();
@@ -710,9 +711,10 @@ function gameLoop() {
     }
 }
 
+// Function to save score to database
 function postPlayerScore() {
     const data = { score: player.score };
-    fetch('postScore.php', {
+    fetch('score.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -720,9 +722,9 @@ function postPlayerScore() {
         body: JSON.stringify(data)
     })
     .then(response => response.text())
-    .then(data => {
-        console.log('Response from PHP:', data);
-    })
+    // .then(data => {
+    //     console.log('Response from PHP:', data);
+    // })
     .catch(error => {
         console.error('Error:', error);
     });
