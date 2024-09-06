@@ -22,7 +22,7 @@ $conn->close();
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="section">
+    <section>
         <h2>Your ID: <?php echo $_SESSION["session_id"] ?></h2>
         <table>
             <tr>
@@ -40,11 +40,11 @@ $conn->close();
                 }
             ?>
         </table>
-    </div>
+    </section>
     <canvas id="gameCanvas" width="600" height="600"></canvas>
-    <div class="section">
+    <section>
         <h3>WASD or Arrow keys to move</h3>
-    </div>
+    </section>
 </body>
 <script src="main.js"></script>
 </html>
