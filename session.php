@@ -8,7 +8,13 @@ if (!isset($_SESSION["session_id"])) {
     // Prepare query, bind parameter, and execute
     $stmt = $conn->prepare("INSERT INTO game_sessions (session_identifier)
                             VALUES (?)"); // Prepare query
-    $stmt->bind_param("s", $session_identifier); // bind parameter
+    if ($stmt === false) {
+        echo "Could not prepare query";
+    }
+    $res = $stmt->bind_param("s", $session_identifier); // bind parameter
+    if ($res === false) {
+        echo "Could not bind parameter";
+    }
     $session_identifier = session_id(); // Get session id
     $res = $stmt->execute(); // Execute query
     if ($res === false) {
